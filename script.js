@@ -3,7 +3,7 @@ let i = 0, j = 0;
 let current = "";
 let isDeleting = false;
 
-function type() {
+ {
   const typing = document.getElementById("typing");
 
   if (i < text.length) {
@@ -47,19 +47,17 @@ function type() {
     setTimeout(erase, 2000);
   }
 }
+
 // Function to play sound
 function playClickSound() {
-    const audio = new Audio('click.mp3'); // Ensure this matches your filename
-    audio.play();
+    const audio = new Audio('click.mp3');
+    audio.play().catch(e => console.log("Audio play failed:", e));
 }
 
-// Add event listener to all buttons (or a specific class)
-const buttons = document.querySelectorAll('button'); 
-
-buttons.forEach(button => {
-    button.addEventListener('click', playClickSound);
+// Add event listener to buttons AND links
+document.querySelectorAll('button, a').forEach(element => {
+    element.addEventListener('click', playClickSound);
 });
-
 function erase() {
   if (charIndex > 0) {
     textElement.textContent = phrases[phraseIndex].substring(0, charIndex - 1);
