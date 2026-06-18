@@ -47,6 +47,18 @@ function type() {
     setTimeout(erase, 2000);
   }
 }
+// Function to play sound
+function playClickSound() {
+    const audio = new Audio('click.mp3'); // Ensure this matches your filename
+    audio.play();
+}
+
+// Add event listener to all buttons (or a specific class)
+const buttons = document.querySelectorAll('button'); 
+
+buttons.forEach(button => {
+    button.addEventListener('click', playClickSound);
+});
 
 function erase() {
   if (charIndex > 0) {
