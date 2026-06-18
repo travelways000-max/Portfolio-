@@ -1,91 +1,501 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Durgesh Patil | Portfolio</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Durgesh Bharat Patil — Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg:#0a0d12;
+    --bg-soft:#0d1117;
+    --panel:#12161d;
+    --panel-2:#171c25;
+    --border:#242b37;
+    --border-soft:#1b212b;
+    --text:#dbe1e8;
+    --text-dim:#8a93a3;
+    --text-faint:#525c6b;
+    --amber:#ffb454;
+    --mint:#7ee3b3;
+    --blue:#6fb3ff;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 85% -10%, rgba(255,180,84,0.05), transparent 60%),
+      radial-gradient(ellipse 800px 600px at -10% 30%, rgba(111,179,255,0.05), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    min-height:100vh;
+  }
+
+  a{color:inherit; text-decoration:none;}
+
+  ::selection{background:rgba(255,180,84,0.25); color:#fff;}
+
+  .editor{
+    max-width:1180px;
+    margin:0 auto;
+    border-left:1px solid var(--border-soft);
+    border-right:1px solid var(--border-soft);
+    min-height:100vh;
+    background:linear-gradient(180deg, rgba(255,255,255,0.012), transparent 220px);
+  }
+
+  /* ---------- Title bar ---------- */
+  .titlebar{
+    display:flex; align-items:center; gap:10px;
+    padding:13px 22px;
+    background:var(--panel-2);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .dots{display:flex; gap:7px;}
+  .dot{width:11px; height:11px; border-radius:50%;}
+  .dot.red{background:#ff5f57;}
+  .dot.yellow{background:#febc2e;}
+  .dot.green{background:#28c840;}
+  .titlebar .filename{
+    margin-left:8px;
+    font-family:var(--mono);
+    font-size:0.78rem;
+    color:var(--text-faint);
+    letter-spacing:0.02em;
+  }
+  .titlebar .filename b{color:var(--text-dim); font-weight:500;}
+
+  /* ---------- Tab bar / nav ---------- */
+  .tabbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; gap:2px;
+    overflow-x:auto;
+    background:var(--panel);
+    border-bottom:1px solid var(--border-soft);
+    scrollbar-width:none;
+  }
+  .tabbar::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto;
+    font-family:var(--mono);
+    font-size:0.82rem;
+    color:var(--text-faint);
+    padding:13px 20px;
+    border-right:1px solid var(--border-soft);
+    border-bottom:2px solid transparent;
+    cursor:pointer;
+    background:transparent;
+    transition:color .2s ease, background .2s ease;
+    white-space:nowrap;
+  }
+  .tab::before{content:'● '; opacity:0.45; font-size:0.7rem;}
+  .tab:hover{color:var(--text-dim); background:rgba(255,255,255,0.015);}
+  .tab.active{color:var(--amber); border-bottom-color:var(--amber); background:var(--panel-2);}
+  .tab.active::before{color:var(--amber); opacity:1;}
+
+  /* ---------- Layout helpers ---------- */
+  main{padding:0 0 10px;}
+  section{padding:64px 22px; border-bottom:1px solid var(--border-soft);}
+  section:last-of-type{border-bottom:none;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+
+  .eyebrow{
+    font-family:var(--mono); font-size:0.74rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--mint); margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:'//'; color:var(--text-faint);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    display:grid; grid-template-columns:1.25fr 0.9fr; gap:56px;
+    align-items:center; padding-top:72px; padding-bottom:72px;
+  }
+  .hero-eyebrow{
+    font-family:var(--mono); font-size:0.8rem; color:var(--text-dim);
+    margin-bottom:18px; letter-spacing:0.02em;
+  }
+  .hero-eyebrow .pipe{color:var(--text-faint); margin:0 8px;}
+  .hero-name{
+    font-family:var(--mono); font-weight:800;
+    font-size:clamp(2.1rem, 5.4vw, 3.6rem);
+    line-height:1.08; letter-spacing:-0.01em;
+    color:#f3f6fa;
+    margin-bottom:22px;
+  }
+  .hero-name .tag{color:var(--blue);}
+  .hero-name .slash{color:var(--text-faint);}
+  .hero-name .cursor{
+    display:inline-block; width:10px; height:0.85em;
+    background:var(--amber); margin-left:4px; vertical-align:-2px;
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  .terminal{
+    font-family:var(--mono); font-size:0.92rem; color:var(--text-dim);
+    background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:8px; padding:18px 20px; margin-bottom:30px;
+    max-width:520px;
+  }
+  .terminal .ln{margin-bottom:6px;}
+  .terminal .ln:last-child{margin-bottom:0;}
+  .terminal .prompt{color:var(--mint); margin-right:8px;}
+  .terminal .out{color:var(--text-dim);}
+  .terminal .out b{color:var(--text); font-weight:500;}
+
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono); font-size:0.85rem; font-weight:500;
+    padding:13px 24px; border-radius:7px; cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    border:1px solid transparent;
+  }
+  .btn-primary{background:var(--amber); color:#1a1206;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,180,84,0.22);}
+  .btn-ghost{border-color:var(--border); color:var(--text-dim); background:transparent;}
+  .btn-ghost:hover{border-color:var(--blue); color:var(--blue); transform:translateY(-2px);}
+
+  /* ---------- Photo frame ---------- */
+  .photo-wrap{display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .jsx-tag{font-family:var(--mono); font-size:0.85rem; color:var(--blue); align-self:flex-start;}
+  .jsx-tag.close{align-self:flex-start;}
+  .photo-frame{
+    position:relative; width:100%; max-width:300px;
+    aspect-ratio:4/5; border-radius:10px; overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  }
+  .photo-frame img{width:100%; height:100%; object-fit:cover; object-position:center 20%; display:block;}
+  .photo-frame::before, .photo-frame::after{
+    content:''; position:absolute; width:22px; height:22px;
+    border-color:var(--amber); pointer-events:none;
+  }
+  .photo-frame::before{top:10px; left:10px; border-top:2px solid var(--amber); border-left:2px solid var(--amber);}
+  .photo-frame::after{bottom:10px; right:10px; border-bottom:2px solid var(--amber); border-right:2px solid var(--amber);}
+  .photo-caption{
+    font-family:var(--mono); font-size:0.74rem; color:var(--text-faint);
+  }
+
+  /* ---------- Code block (about) ---------- */
+  .code-block{
+    display:flex; background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:8px; overflow:hidden; max-width:760px;
+  }
+  .gutter{
+    font-family:var(--mono); font-size:0.86rem; color:var(--text-faint);
+    text-align:right; padding:20px 14px; background:var(--panel-2);
+    border-right:1px solid var(--border-soft); user-select:none;
+    line-height:1.85;
+  }
+  .code-lines{
+    font-family:var(--mono); font-size:0.86rem; padding:20px 22px;
+    line-height:1.85; color:var(--text-dim); overflow-x:auto;
+  }
+  .code-lines .kw{color:var(--blue);}
+  .code-lines .fn{color:var(--mint);}
+  .code-lines .com{color:var(--text-faint);}
+  .code-lines .str{color:var(--amber);}
+
+  h2.section-title{
+    font-family:var(--mono); font-size:clamp(1.3rem,2.6vw,1.7rem);
+    color:#f3f6fa; margin-bottom:30px; font-weight:700;
+  }
+  h2.section-title .ext{color:var(--text-faint); font-weight:400;}
+
+  /* ---------- Education ---------- */
+  .json-block{
+    font-family:var(--mono); font-size:0.92rem; line-height:1.95;
+    background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:8px; padding:26px 30px; max-width:680px; color:var(--text-dim);
+  }
+  .json-block .key{color:var(--blue);}
+  .json-block .val{color:var(--amber);}
+  .json-block .punc{color:var(--text-faint);}
+  .json-block .arr-item{color:var(--mint);}
+
+  /* ---------- Skills ---------- */
+  .skill-group{margin-bottom:34px; max-width:760px;}
+  .skill-group:last-child{margin-bottom:0;}
+  .skill-group-label{
+    font-family:var(--mono); font-size:0.82rem; color:var(--text-dim);
+    margin-bottom:14px;
+  }
+  .skill-group-label .kw{color:var(--blue);}
+  .chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    font-family:var(--mono); font-size:0.82rem;
+    padding:8px 14px; border-radius:6px;
+    border:1px solid var(--border-soft); background:var(--panel);
+    color:var(--text-dim); transition:transform .15s ease, border-color .15s ease;
+  }
+  .chip:hover{transform:translateY(-2px); border-color:var(--border);}
+  .chip.lang{color:var(--amber);}
+  .chip.tool{color:var(--blue);}
+  .chip.learn{color:var(--mint);}
+
+  /* ---------- Contact ---------- */
+  .md-block{max-width:640px;}
+  .md-block h3{
+    font-family:var(--mono); font-size:1.1rem; color:#f3f6fa; margin-bottom:16px;
+  }
+  .md-block h3::before{content:'## '; color:var(--text-faint);}
+  .contact-list{list-style:none;}
+  .contact-list li{
+    display:flex; gap:12px; align-items:baseline;
+    padding:13px 0; border-bottom:1px solid var(--border-soft);
+    font-family:var(--mono); font-size:0.92rem;
+  }
+  .contact-list li:last-child{border-bottom:none;}
+  .contact-list .dash{color:var(--text-faint);}
+  .contact-list .label{color:var(--text-dim); min-width:78px;}
+  .contact-list a, .contact-list span.val{color:var(--blue); word-break:break-all;}
+  .contact-list a:hover{color:var(--amber);}
+  .note{
+    margin-top:24px; font-family:var(--mono); font-size:0.78rem;
+    color:var(--text-faint); line-height:1.7;
+  }
+
+  /* ---------- Status bar ---------- */
+  .statusbar{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--panel-2); border-top:1px solid var(--border-soft);
+    padding:9px 22px; font-family:var(--mono); font-size:0.74rem; color:var(--text-faint);
+  }
+  .statusbar .left, .statusbar .right{display:flex; gap:18px; align-items:center;}
+  .statusbar .branch{color:var(--mint);}
+  .statusbar .branch::before{content:'⎇ '; }
+
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr; padding-top:50px;}
+    .photo-frame{max-width:240px; margin:0 auto;}
+    .photo-wrap{align-items:center;}
+    .jsx-tag{align-self:center;}
+    section{padding:48px 18px;}
+    .statusbar .right .clk-label{display:none;}
+  }
+  @media (max-width:480px){
+    .titlebar .filename{display:none;}
+    .terminal{font-size:0.82rem;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+</style>
 </head>
 <body>
 
-<section class="hero">
-  <div class="hero-content">
-    <h1>Durgesh Patil</h1>
-    <p>Computer Engineering @ R.C. Patel Institute of Technology</p>
-    <p id="typing"></p>
-    <div class="hero-btns">
-      <a href="#projects" class="btn">View Projects</a>
-      <a href="#contact" class="btn btn-outline">Let's Talk</a>
+<div class="editor">
+
+  <div class="titlebar">
+    <div class="dots">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    </div>
+    <span class="filename"><b>durgesh-patil</b> — portfolio — visual studio code</span>
+  </div>
+
+  <nav class="tabbar" id="tabbar">
+    <div class="tab active" data-target="hero">welcome</div>
+    <div class="tab" data-target="about">about.tsx</div>
+    <div class="tab" data-target="education">education.json</div>
+    <div class="tab" data-target="skills">skills.js</div>
+    <div class="tab" data-target="contact">contact.md</div>
+  </nav>
+
+  <main>
+
+    <section id="hero">
+      <div class="hero">
+        <div>
+          <div class="hero-eyebrow">FY · B.Tech <span class="pipe">|</span> RCPIT College of Engineering</div>
+          <h1 class="hero-name">
+            <span class="slash">&lt;</span><span class="tag">DurgeshPatil</span> <span class="slash">/&gt;</span><span class="cursor"></span>
+          </h1>
+
+          <div class="terminal">
+            <div class="ln"><span class="prompt">$</span><span class="out">whoami</span></div>
+            <div class="ln"><span class="out">&gt; <b>Durgesh Bharat Patil</b> — First Year Engineering Student</span></div>
+            <div class="ln"><span class="prompt">$</span><span class="out">status</span></div>
+            <div class="ln"><span class="out">&gt; compiling skills · debugging confidence · shipping curiosity</span></div>
+          </div>
+
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#skills">View My Stack</a>
+            <a class="btn btn-ghost" href="#contact">Say Hello</a>
+          </div>
+        </div>
+
+        <div class="photo-wrap">
+          <span class="jsx-tag">&lt;Profile&gt;</span>
+          <div class="photo-frame">
+            <img src="durgesh.jpg" alt="Durgesh Bharat Patil">
+          </div>
+          <span class="jsx-tag close">&lt;/Profile&gt;</span>
+          <span class="photo-caption">// durgesh.jpg</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="reveal">
+      <h2 class="section-title">about<span class="ext">.tsx</span></h2>
+      <div class="code-block">
+        <div class="gutter">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11</div>
+        <div class="code-lines">
+<span class="com">// about.tsx</span><br>
+<br>
+<span class="kw">export default function</span> <span class="fn">Durgesh</span>() {<br>
+&nbsp;&nbsp;<span class="kw">return</span> (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;bio&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I'm a <span class="str">first-year B.Tech student</span> at RCPIT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;College of Engineering — early in the build, still<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reading the manual, but already turning <span class="str">"how does<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this even work?"</span> into working code.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/bio&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+        </div>
+      </div>
+    </section>
+
+    <section id="education" class="reveal">
+      <h2 class="section-title">education<span class="ext">.json</span></h2>
+      <div class="json-block">
+        { <br>
+        &nbsp;&nbsp;<span class="key">"institute"</span><span class="punc">:</span> <span class="val">"RCPIT College of Engineering"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"program"</span><span class="punc">:</span> <span class="val">"B.Tech"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"year"</span><span class="punc">:</span> <span class="val">"First Year (FY)"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"status"</span><span class="punc">:</span> <span class="val">"In Progress"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"focus"</span><span class="punc">:</span> [<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="arr-item">"Engineering Mathematics"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="arr-item">"Programming Fundamentals"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="arr-item">"Core Engineering Sciences"</span><br>
+        &nbsp;&nbsp;]<br>
+        }
+      </div>
+    </section>
+
+    <section id="skills" class="reveal">
+      <h2 class="section-title">skills<span class="ext">.js</span></h2>
+
+      <div class="skill-group">
+        <div class="skill-group-label"><span class="kw">const</span> languages = [</div>
+        <div class="chips">
+          <span class="chip lang">C</span>
+          <span class="chip lang">Python</span>
+          <span class="chip lang">Java (basics)</span>
+          <span class="chip lang">HTML</span>
+          <span class="chip lang">CSS</span>
+          <span class="chip lang">JavaScript (basics)</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label"><span class="kw">const</span> tools = [</div>
+        <div class="chips">
+          <span class="chip tool">VS Code</span>
+          <span class="chip tool">Git & GitHub</span>
+          <span class="chip tool">MS Office</span>
+          <span class="chip tool">Canva</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label"><span class="kw">const</span> currentlyLearning = [</div>
+        <div class="chips">
+          <span class="chip learn">Data Structures & Algorithms</span>
+          <span class="chip learn">Web Development</span>
+          <span class="chip learn">Problem Solving</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="reveal">
+      <h2 class="section-title">contact<span class="ext">.md</span></h2>
+      <div class="md-block">
+        <h3>Let's Connect</h3>
+        <ul class="contact-list">
+          <li><span class="dash">-</span><span class="label">Email</span><a href="mailto:durgesh.patil@example.com">durgesh.patil@example.com</a></li>
+          <li><span class="dash">-</span><span class="label">Phone</span><span class="val">+91 XXXXX XXXXX</span></li>
+          <li><span class="dash">-</span><span class="label">LinkedIn</span><span class="val">linkedin.com/in/durgesh-patil</span></li>
+          <li><span class="dash">-</span><span class="label">GitHub</span><span class="val">github.com/durgesh-patil</span></li>
+          <li><span class="dash">-</span><span class="label">College</span><span class="val">RCPIT College of Engineering</span></li>
+        </ul>
+        <p class="note">// placeholders above — swap in your real email, phone and profile links before publishing.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="statusbar">
+    <div class="left">
+      <span class="branch">main</span>
+      <span>FY · B.Tech</span>
+      <span>RCPIT</span>
+    </div>
+    <div class="right">
+      <span>UTF-8</span>
+      <span>LF</span>
+      <span id="clock" class="clk-label">--:--</span>
     </div>
   </div>
-</section>
 
-<section id="about" class="container">
-  <h2>About Me</h2>
-  <p>
-    I'm a first-year Computer Engineering student passionate about **Cybersecurity, AI, and Music Production**. 
-    I bridge the gap between technical logic and creative expression, aiming to build a startup that merges high-tech with artistic innovation.
-  </p>
-</section>
+</div>
 
-<section id="skills" class="container">
-  <h2>Technical Arsenal</h2>
-  <div class="grid">
-    <div class="card"><h3>Languages</h3><p>C Programming, Python, HTML/CSS, JavaScript</p></div>
-    <div class="card"><h3>AI & Automation</h3><p>n8n, Telegram Bot API, AI Prompt Engineering</p></div>
-    <div class="card"><h3>Creative</h3><p>Music Production, Video Editing (Moto G45 Ad)</p></div>
-  </div>
-</section>
+<script>
+  // Tab nav: smooth scroll + active state on click
+  const tabs = document.querySelectorAll('.tab');
+  const sections = ['hero','about','education','skills','contact'].map(id => document.getElementById(id));
 
-<section id="projects" class="container">
-  <h2>Featured Projects</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Telegram AI Bot</h3>
-      <p>Automated assistant built using n8n and AI integration for real-time responses.</p>
-    </div>
-    <div class="card">
-      <h3>Portfolio Website</h3>
-      <p>Personal brand site featuring custom CSS animations and responsive design.</p>
-    </div>
-    <div class="card">
-      <h3>Moto G45 Ad</h3>
-      <p>A creative mobile advertisement project showcasing video editing and marketing skills.</p>
-    </div>
-  </div>
-</section>
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = document.getElementById(tab.dataset.target);
+      if(target) target.scrollIntoView({behavior:'smooth', block: tab.dataset.target === 'hero' ? 'start' : 'start'});
+    });
+  });
 
-<section id="certs" class="container">
-  <h2>Certifications</h2>
-  <div class="grid">
-    <div class="card cert-card">
-      <h4>Learn C Programming</h4>
-      <p>CodeChef | Issued: 11 Jan 2026</p>
-      <small>ID: 2de3adb</small>
-    </div>
-    <div class="card cert-card">
-      <h4>Matrices (RCPIT 2025)</h4>
-      <p>CodeChef | Issued: 02 Jan 2026</p>
-      <small>ID: caeb16b</small>
-    </div>
-  </div>
-</section>
+  // Active tab highlighting on scroll
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        tabs.forEach(t => t.classList.toggle('active', t.dataset.target === entry.target.id));
+      }
+    });
+  }, {rootMargin:'-40% 0px -50% 0px'});
+  sections.forEach(s => { if(s) obs.observe(s); });
 
-<section id="contact" class="container">
-  <h2>Get In Touch</h2>
-  <div class="contact-links">
-    <p>Email: <a href="mailto:dp137297@gmail.com">dp137297@gmail.com</a></p>
-    <p>
-      <a href="https://www.linkedin.com/in/durgesh-patil-2aba14336" target="_blank">LinkedIn</a> | 
-      <a href="#">GitHub</a>
-    </p>
-  </div>
-</section>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15});
+  revealEls.forEach(el => revealObs.observe(el));
 
-<footer>
-  <p>&copy; 2026 Durgesh Patil. Built with passion.</p>
-</footer>
+  // Live clock
+  function tick(){
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  }
+  tick();
+  setInterval(tick, 1000);
 
-<script src="script.js"></script>
+  // Respect reduced motion: skip JS-driven flourish beyond CSS (cursor blink etc. already CSS-only)
+</script>
+
 </body>
 </html>
