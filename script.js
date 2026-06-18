@@ -48,15 +48,13 @@ function type() {
   }
 }
 
-// Function to play sound
-function playClickSound() {
-    const audio = new Audio('click.mp3');
-    audio.play().catch(e => console.log("Audio play failed:", e));
-}
+const clickSound = document.getElementById("clickSound");
 
-// Add event listener to buttons AND links
-document.querySelectorAll('button, a').forEach(element => {
-    element.addEventListener('click', playClickSound);
+document.querySelectorAll("button, a").forEach(element => {
+  element.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  });
 });
 function erase() {
   if (charIndex > 0) {
